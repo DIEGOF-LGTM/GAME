@@ -1,73 +1,74 @@
 import pygame
-from personaje import personaje
-import costantes
 
-
-player = personaje(50,50)
+# Define las constantes
+FPS = 60
+COLOR_BG = (0, 0, 0)  # Fondo negro
 
 pygame.init()
-ancho = costantes.ANCHO_VENTANA
-alto = costantes.ALTO_VENTANA
+
+ancho = 880
+alto = 600
 
 ventana = pygame.display.set_mode((ancho, alto))
-pygame.display.set_caption("mi primer juego")
+pygame.display.set_caption("Mi primer juego")
+
+# Crear el personaje como un rectángulo
+jugador = pygame.Rect(400, 300, 50, 50)
+
+# Variables de movimiento
+mover_derecha = False
+mover_izquierda = False
 mover_arriba = False
 mover_abajo = False
-mover_izquierda = False
-mover_derecha = False
 
-reloj = player.timer.clock()
-
-
-
-
-
-
+reloj = pygame.time.Clock()
 run = True
-
 while run:
+    reloj.tick(FPS)
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                mover_izquierda = True
+            if event.key == pygame.K_d:
+                mover_derecha = True
+            if event.key == pygame.K_w:
+                mover_arriba = True
+            if event.key == pygame.K_s:
+                mover_abajo = True
 
-    reloj.tick(costantes.FPS)
-    ventana.fill(costantes.COLOR_FONDO)
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_d:
+                mover_derecha = False
+            if event.key == pygame.K_a:
+                mover_izquierda = False
+            if event.key == pygame.K_w:
+                mover_arriba = False
+            if event.key == pygame.K_s:
+                mover_abajo = False
 
+    """Calcular el movimiento"""
     delta_x = 0
     delta_y = 0
 
-    if mover_derecha == True:
-       delta_x = costantes.velocidad
-    if mover_izquierda == True:
-       delta_y = -costantes.velocidad
-    if mover_abajo == True:
-       delta_x = costantes.velocidad
-    if mover_arriba == True:
-       delta_y = -costantes.velocidad
+    if mover_derecha:
+        delta_x = 5
+    if mover_izquierda:
+        delta_x = -5
+    if mover_arriba:
+        delta_y = -5
+    if mover_abajo:
+        delta_y = 5
 
-    player.movimeiento(delta_x, delta_y)
+    jugador.x += delta_x
+    jugador.y += delta_y
 
-    player.dibujar(ventana)
-    for event in pygame.event.get():
-     if event.type == pygame.QUIT:
-        run = False
-     elif event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_a:
-            mover_izquierda = True 
-        if event.key == pygame.K_d:
-            mover_derecha = True
-        if event.key == pygame.K_w:
-            mover_arriba = True
-        if event.key == pygame.K_s:
-            mover_abajo = True
-     elif event.type == pygame.KEYUP:
-        if event.key == pygame.K_a:
-            mover_izquierda = False
-        if event.key == pygame.K_d:
-            mover_derecha = False
-        if event.key == pygame.K_w:
-            mover_arriba = False
-        if event.key == pygame.K_s:
-            mover_abajo = False
-
-
-
+    # Dibujar
+    ventana.fill(COLOR_BG)  # Solo aquí
+    pygame.draw.rect(ventana, (255, 0, 0), jugador)
     pygame.display.update()
+
 pygame.quit()
